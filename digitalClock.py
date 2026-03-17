@@ -3,12 +3,12 @@ import time
 
 app_window = Tk()
 app_window.title("Digital Clock")
-app_window.geometry("400x150")
+app_window.geometry("450x200")
 app_window.resizable(0, 0)
 
 text_font = ("Boulder", 68, "bold")
-background = "#F2E750"
-foreground = "#363529"
+background = "#212121"
+foreground = "#FDFDFD"
 border_width = 25
 
 label = Label(app_window, font=text_font, bg=background, fg=foreground, bd=border_width)
