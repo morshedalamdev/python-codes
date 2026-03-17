@@ -45,16 +45,18 @@ class Player:
 
 class Game:
     def __init__(self):
-        name1 = input("Player 1 Name: ")
-        name2 = input("Player 2 Name: ")
+        name1 = input("👤 Player 1 Name: ")
+        name2 = input("👤 Player 2 Name: ")
         self.deck = Deck()
         self.p1 = Player(name1)
         self.p2 = Player(name2)
     
     def wins(self, winner):
-        w = "This round goes to {}"
+        w = "🎊 This round goes to {}"
         w = w.format(winner)
         print(w)
+        print("🧩 Current score: {}: {} - {}: {}".format(self.p1.name, self.p1.wins, self.p2.name, self.p2.wins))
+        print("--------------------------------------------------")
 
     def draw(self, p1n, p1c, p2n, p2c):
         d = "{} drew {} and {} drew {}"
@@ -63,10 +65,10 @@ class Game:
 
     def play_game(self):
         cards = self.deck.cards
-        print("War has begun!")
+        print("🏁 Game has begun")
         
         while len(cards) >= 2:
-            m = "q to quit. Any key to play: "
+            m = "🚫 Press q to quit \n⏩️ Press any key to continue playing "
             response = input(m)
             
             if response == 'q':
@@ -86,14 +88,14 @@ class Game:
                 self.wins(self.p2.name)
             
         win = self.winner(self.p1, self.p2)
-        print("War is over. {} wins".format(win))
+        print("⏹️ Game is over. {} wins 🎉".format(win))
     
     def winner(self, p1, p2):
         if p1.wins > p2.wins:
             return p1.name
         if p1.wins < p2.wins:
             return p2.name
-        return "It was a tie!"
+        return "It was a tie ⋈"
 
 game = Game()
 game.play_game()
