@@ -45,11 +45,36 @@ class Player:
 
 class Game:
     def __init__(self):
+        self.print_welcome()
         name1 = input("👤 Player 1 Name: ")
         name2 = input("👤 Player 2 Name: ")
         self.deck = Deck()
         self.p1 = Player(name1)
         self.p2 = Player(name2)
+    
+    def print_welcome(self):
+        """Print welcome message and game instructions"""
+        print("=" * 60)
+        print("🎴 WELCOME TO THE CARD GAME! 🎴".center(60))
+        print("=" * 60)
+        print()
+        print("📋 GAME DESCRIPTION:")
+        print("   This is a simple card battle game between two players.")
+        print("   Each round, both players draw one card from the deck.")
+        print("   The player with the higher card wins that round!")
+        print()
+        print("🎯 HOW TO PLAY:")
+        print("   1. Enter the names of both players")
+        print("   2. For each round, press 'c' to continue playing")
+        print("   3. Cards will be drawn automatically")
+        print("   4. The higher card wins the round")
+        print("   5. Press 'q' to quit the game at any time")
+        print()
+        print("🏆 WINNING:")
+        print("   The player with the most rounds won is the WINNER!")
+        print()
+        print("=" * 60)
+        print()
     
     def wins(self, winner):
         w = "🎊 This round goes to {}"
@@ -68,24 +93,24 @@ class Game:
         print("🏁 Game has begun")
         
         while len(cards) >= 2:
-            m = "🚫 Press q to quit \n⏩️ Press any key to continue playing "
+            m = "🚫 Press 'q' to quit \n⏩️ Press 'c' key to continue playing: "
             response = input(m)
             
             if response == 'q':
                 break
 
-            p1c = self.deck.rm_card()
-            p2c = self.deck.rm_card()
-            p1n = self.p1.name
-            p2n = self.p2.name
-            self.draw(p1n, p1c, p2n, p2c)
-
-            if p1c > p2c:
-                self.p1.wins += 1
-                self.wins(self.p1.name)
-            else:
-                self.p2.wins += 1
-                self.wins(self.p2.name)
+            if response == 'c':
+                p1c = self.deck.rm_card()
+                p2c = self.deck.rm_card()
+                p1n = self.p1.name
+                p2n = self.p2.name
+                self.draw(p1n, p1c, p2n, p2c)
+                if p1c > p2c:
+                    self.p1.wins += 1
+                    self.wins(self.p1.name)
+                else:
+                    self.p2.wins += 1
+                    self.wins(self.p2.name)
             
         win = self.winner(self.p1, self.p2)
         print("⏹️ Game is over. {} wins 🎉".format(win))
