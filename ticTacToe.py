@@ -9,6 +9,47 @@ symbol_O_color = "#0492CF"
 Green_color = "#7BC043"
 
 
+def print_welcome():
+    """Print welcome message and game instructions"""
+    print("=" * 70)
+    print("🎮 WELCOME TO TIC TAC TOE! 🎮".center(70))
+    print("=" * 70)
+    print()
+    print("📋 GAME DESCRIPTION:")
+    print("   Tic Tac Toe is a classic two-player strategy game.")
+    print("   Players take turns placing their symbols (X or O) on a 3x3 grid.")
+    print("   The first player to get 3 in a row (horizontally, vertically,")
+    print("   or diagonally) wins the game!")
+    print()
+    print("🎯 HOW TO PLAY:")
+    print("   1. Player 1 is X (Red) and plays first")
+    print("   2. Player 2 is O (Blue)")
+    print("   3. Click on any empty cell to place your symbol")
+    print("   4. Players alternate turns")
+    print("   5. First to get 3 in a row wins!")
+    print("   6. If all 9 cells are filled with no winner, it's a TIE")
+    print()
+    print("🏆 WINNING POSITIONS:")
+    print("   ✓ Three in a row horizontally (left to right)")
+    print("   ✓ Three in a column vertically (top to bottom)")
+    print("   ✓ Three in a diagonal (corner to corner)")
+    print()
+    print("🎮 GAME RULES:")
+    print("   • You cannot place a symbol in an already occupied cell")
+    print("   • Players must alternate turns")
+    print("   • Game continues until someone wins or all cells are filled")
+    print("   • After each game, click to play again!")
+    print("   • Scores are tracked across multiple games")
+    print()
+    print("💡 TIPS:")
+    print("   • Try to get 3 in a row before your opponent")
+    print("   • Block your opponent's winning moves")
+    print("   • Control the center and corners for better positions")
+    print()
+    print("=" * 70)
+    print()
+
+
 class TicTacToe:
     def __init__(self):
         self.window = Tk()
@@ -94,31 +135,31 @@ class TicTacToe:
     def display_game_over(self):
         if self.X_wins:
             self.X_score += 1
-            text = "X wins!"
+            text = "🎉 X WINS! 🎉"
             color = symbol_X_color
         elif self.O_wins:
             self.O_score += 1
-            text = "O wins!"
+            text = "🎉 O WINS! 🎉"
             color = symbol_O_color
         else:
             self.tie_score += 1
-            text = "Tie!"
+            text = "🤝 TIE! 🤝"
             color = Green_color
 
         self.canvas.delete("all")
         self.canvas.create_text(
             size_of_board / 2,
             size_of_board / 3,
-            font="cmr 60 bold",
+            font="cmr 50 bold",
             fill=color,
             text=text,
         )
 
-        score_text = "Scores \n"
+        score_text = "📊 SCORES"
         self.canvas.create_text(
             size_of_board / 2,
             5 * size_of_board / 8,
-            font="cmr 40 bold",
+            font="cmr 35 bold",
             fill=Green_color,
             text=score_text,
         )
@@ -129,17 +170,17 @@ class TicTacToe:
         self.canvas.create_text(
             size_of_board / 2,
             3 * size_of_board / 4,
-            font="cmr 30 bold",
+            font="cmr 25 bold",
             fill=Green_color,
             text=score_text,
         )
         self.reset_board = True
 
-        score_text = "Click to play again \n"
+        score_text = "Click to play again ➤"
         self.canvas.create_text(
             size_of_board / 2,
             15 * size_of_board / 16,
-            font="cmr 20 bold",
+            font="cmr 18 bold",
             fill="gray",
             text=score_text,
         )
@@ -216,11 +257,11 @@ class TicTacToe:
         self.game_over = self.X_wins or self.O_wins or self.tie
 
         if self.X_wins:
-            print("X wins!")
+            print("🎉 X wins!")
         elif self.O_wins:
-            print("O wins!")
+            print("🎉 O wins!")
         elif self.tie:
-            print("Tie!")
+            print("🤝 Tie!")
 
         return self.game_over
 
@@ -251,6 +292,9 @@ class TicTacToe:
             self.play_again()
             self.reset_board = False
 
+
+# Print welcome message before starting the game
+print_welcome()
 
 game_instance = TicTacToe()
 game_instance.mainloop()
