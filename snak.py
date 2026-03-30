@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
 import random
-import time
 
 class SnakeGame:
      def __init__(self):
