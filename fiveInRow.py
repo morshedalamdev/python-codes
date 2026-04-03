@@ -283,7 +283,6 @@ class FiveInRow:
         """Start the game"""
         self.window.mainloop()
 
-
 # Print welcome message and instructions
 print_welcome()
 # Start the game

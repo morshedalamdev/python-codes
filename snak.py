@@ -276,4 +276,4 @@ def print_welcome():
 if __name__ == "__main__":
      print_welcome() # print instructions to terminal
      game = SnakeGame() # create game instance
-     game.run() # start the game
+     game.run() # start the game 
