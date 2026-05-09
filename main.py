@@ -73,4 +73,12 @@
 # import h5py
 # filename = 'data/urbanpop.hdf5'
 # data = h5py.File(filename, 'r') # 'r' stands for 'read'
-# print(data.keys()) # Print the keys (datasets) in the HDF5 file
+
+# Structure of HDF5 files is hierarchical, similar to a file system, with groups and datasets
+for key in data.keys():
+    print(key) # Print each key (dataset) in the HDF5 file
+
+for key in data['meta'].keys():
+    print(key) # Print each key in the 'meta' group of the HDF5 file
+
+print(np.array(data['meta']['description']), np.array(data['meta']['source'])) # Print the 'description' and 'source' datasets from the 'meta' group
