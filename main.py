@@ -1,4 +1,5 @@
 """READING A TEXT FILE"""
+
 # filename = 'data/huck_finn.txt'
 # file = open(filename, mode='r') # 'r' stands for 'read'
 # text = file.read()
@@ -75,10 +76,52 @@
 # data = h5py.File(filename, 'r') # 'r' stands for 'read'
 
 # Structure of HDF5 files is hierarchical, similar to a file system, with groups and datasets
-for key in data.keys():
-    print(key) # Print each key (dataset) in the HDF5 file
+# for key in data.keys():
+#     print(key) # Print each key (dataset) in the HDF5 file
 
-for key in data['meta'].keys():
-    print(key) # Print each key in the 'meta' group of the HDF5 file
+# for key in data['meta'].keys():
+#     print(key) # Print each key in the 'meta' group of the HDF5 file
 
-print(np.array(data['meta']['description']), np.array(data['meta']['source'])) # Print the 'description' and 'source' datasets from the 'meta' group
+# print(np.array(data['meta']['description']), np.array(data['meta']['source'])) # Print the 'description' and 'source' datasets from the 'meta' group
+
+
+""" CREATING A DATABASE ENGINE IN PYTHON """
+# from sqlalchemy import create_engine
+
+# engine = create_engine(
+#     "sqlite:///Northwind.sqlite"
+# )  # Create a connection to a SQLite database
+# table_names = engine.table_names()  # Get the names of the tables in the database
+# print(table_names)  # Print the table names
+
+
+""" SQL QUERYING WITH PANDAS """
+from sqlalchemy import create_engine
+import pandas as pd
+
+engine = create_engine(
+    "sqlite:///Northwind.sqlite"
+)  # Create a connection to a SQLite database
+
+# USING DATAFRAMES TO QUERY A DATABASE
+con = engine.connect()  # Establish a connection to the database
+rs = con.execute(
+    "SELECT * FROM Employees"
+)  # Execute a SQL query to select all records from the Employees table
+df = pd.DataFrame(rs.fetchall())  # Fetch all results and convert to a DataFrame
+con.close()  # Close the connection to the database
+
+# CONTEXT MANAGER WITH SQLALCHEMY
+with engine.connect() as con:  # Use a context manager to automatically close the connection
+    rs = con.execute("SELECT * FROM Employees")  # Execute a SQL query
+    df = pd.DataFrame(rs.fetchall())  # Fetch all results and convert to a DataFrame
+    df.columns = (
+        rs.keys()
+    )  # Set the column names of the DataFrame to the keys from the result set
+
+# PANDAS SQL QUERYING
+df = pd.read_sql_query(
+    "SELECT * FROM Employees", engine
+)  # Use pandas to execute a SQL query and return a DataFrame
+
+print(df.head())  # Print the first few rows of the DataFrame
