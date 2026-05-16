@@ -1,20 +1,5 @@
-from pathlib import Path
-import sys
-
-_workspace_root = Path(__file__).resolve().parent
-_venv_site_packages = _workspace_root / ".venv" / "lib" / "python3.12" / "site-packages"
-_venv_site_packages_alt = (
-    _workspace_root / ".venv" / "lib64" / "python3.12" / "site-packages"
-)
-
-for _site_packages_path in (_venv_site_packages, _venv_site_packages_alt):
-    if _site_packages_path.is_dir():
-        site_packages_str = str(_site_packages_path)
-        if site_packages_str not in sys.path:
-            sys.path.insert(0, site_packages_str)
-
-
 """Importing flat files from the web with urllib"""
+
 # from urllib.request import urlretrieve
 # import pandas as pd
 
@@ -46,13 +31,71 @@ for _site_packages_path in (_venv_site_packages, _venv_site_packages_alt):
 
 
 """ Importing non-flat files from the web with pandas"""
-import pandas as pd
+# import pandas as pd
+# import xlrd
 
-# assign url of file:
-url = "https://assets.datacamp.com/course/importing_data_into_r/latitude.xls"
+# # assign url of file:
+# url = "https://assets.datacamp.com/course/importing_data_into_r/latitude.xls"
 
-# read in all sheets of Excel file
-xls = pd.read_excel(url, sheet_name=None)
+# # read in all sheets of Excel file
+# xls = pd.read_excel(url, sheet_name=None)
 
-# print the sheetnames to the shell
-print(xls.keys())
+# print(xls.keys())  # print the sheetnames to the shell
+# print(xls["1700"].head())  # print the head of the sheet named "1700" to the shell
+
+
+""" Performing HTTP requests in Python using urllib """
+# from urllib.request import urlopen, Request
+
+# # Specify the url
+# url = "https://campus.datacamp.com/courses/1606/4135?ex=2"
+
+# request = Request(url)  # This packages the request
+# response = urlopen(request)  # Sends the request and catches the response
+
+# html = response.read()  # Extract the response
+
+# print(type(response))  # Print the datatype of response
+# print(html)  # Print the html
+# response.close()  # Be polite and close the response!
+
+
+""" Performing HTTP requests in Python using requests """
+# import requests
+
+# # Specify the url
+# url = "http://www.datacamp.com/teach/documentation"
+
+# # Packages the request, send the request and catch the response
+# r = requests.get(url)
+
+# text = r.text  # Extract the response
+
+# print(text)  # Print the html
+
+
+""" Parsing HTML with BeautifulSoup """
+# from bs4 import BeautifulSoup
+# import requests
+
+# url = "https://www.python.org/~guido/"  # Specify url
+
+# # Package the request, send the request and catch the response
+# r = requests.get(url)
+
+# html_doc = r.text  # Extracts the response as html
+
+# soup = BeautifulSoup(html_doc)  # Create a BeautifulSoup object from the HTML
+
+# pretty_soup = soup.prettify()  # Prettify the BeautifulSoup object
+# guido_title = soup.title  # Get the title of webpage
+# guido_text = soup.text  # Get the text of webpage
+# a_tags = soup.find_all("a")  # Get all the a tags of webpage
+
+# print(pretty_soup)  # Print the response
+# print(guido_title)  # Print the title of the webpage
+# print(guido_text)  # Print the text of the webpage
+
+# # Print the URLs to the shell
+# for link in a_tags:
+#     print(link.get("href"))
