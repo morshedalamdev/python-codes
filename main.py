@@ -1,130 +1,88 @@
-"""Importing flat files from the web with urllib"""
+"""Numeric data or ...?"""
 
-# from urllib.request import urlretrieve
-# import pandas as pd
+# Print the information of ride_sharing
+print(ride_sharing.info())
 
-# # assign url of file:
-# url = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv"
-# urlretrieve(url, "data/winequality-white.csv")  # save file locally
+# Print summary statistics of user_type column
+print(ride_sharing["user_type"].describe())
 
-# # read file into DataFrame & print its head
-# df = pd.read_csv("data/winequality-white.csv", sep=";")
-# print(df.head())
+# Convert user_type from integer to category
+ride_sharing["user_type_cat"] = ride_sharing["user_type"].astype("category")
 
+# Write an assert statement confirming the change
+assert ride_sharing["user_type_cat"].dtype == "category"
 
-"""Importing flat files from the web with pandas"""
-# import matplotlib.pyplot as plt
-# import pandas as pd
-
-# # assign url of file:
-# url = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv"
-
-# # read file into DataFrame & print its head
-# df = pd.read_csv(url, sep=";")
-# print(df.head())
-
-# # Plot first column of df
-# df.iloc[:, 0].plot.hist()
-# plt.xlabel("fixed acidity")
-# plt.ylabel("count")
-# plt.show()
+# Print new summary statistics
+print(ride_sharing["user_type_cat"].describe())
 
 
-""" Importing non-flat files from the web with pandas"""
-# import pandas as pd
-# import xlrd
+""" Summing strings and concatenating numbers """
+# Strip duration of minutes
+ride_sharing["duration_trim"] = ride_sharing["duration"].str.strip("minutes")
 
-# # assign url of file:
-# url = "https://assets.datacamp.com/course/importing_data_into_r/latitude.xls"
+# Convert duration to integer
+ride_sharing["duration_time"] = ride_sharing["duration_trim"].astype("int")
 
-# # read in all sheets of Excel file
-# xls = pd.read_excel(url, sheet_name=None)
+# Write an assert statement making sure of conversion
+assert ride_sharing["duration_time"].dtype == "int"
 
-# print(xls.keys())  # print the sheetnames to the shell
-# print(xls["1700"].head())  # print the head of the sheet named "1700" to the shell
-
-
-""" Performing HTTP requests in Python using urllib """
-# from urllib.request import urlopen, Request
-
-# # Specify the url
-# url = "https://campus.datacamp.com/courses/1606/4135?ex=2"
-
-# request = Request(url)  # This packages the request
-# response = urlopen(request)  # Sends the request and catches the response
-
-# html = response.read()  # Extract the response
-
-# print(type(response))  # Print the datatype of response
-# print(html)  # Print the html
-# response.close()  # Be polite and close the response!
+# Print formed columns and calculate average ride duration
+print(ride_sharing[["duration", "duration_trim", "duration_time"]])
+print(ride_sharing["duration_time"].mean())
 
 
-""" Performing HTTP requests in Python using requests """
-# import requests
+""" Tire size constraints """
+# Convert tire_sizes to integer
+ride_sharing["tire_sizes"] = ride_sharing["tire_sizes"].astype("int")
 
-# # Specify the url
-# url = "http://www.datacamp.com/teach/documentation"
+# Set all values above 27 to 27
+ride_sharing.loc[ride_sharing["tire_sizes"] > 27, "tire_sizes"] = 27
 
-# # Packages the request, send the request and catch the response
-# r = requests.get(url)
+# Reconvert tire_sizes back to categorical
+ride_sharing["tire_sizes"] = ride_sharing["tire_sizes"].astype("category")
 
-# text = r.text  # Extract the response
-
-# print(text)  # Print the html
-
-
-""" Parsing HTML with BeautifulSoup """
-# from bs4 import BeautifulSoup
-# import requests
-
-# url = "https://www.python.org/~guido/"  # Specify url
-
-# # Package the request, send the request and catch the response
-# r = requests.get(url)
-
-# html_doc = r.text  # Extracts the response as html
-
-# soup = BeautifulSoup(html_doc)  # Create a BeautifulSoup object from the HTML
-
-# pretty_soup = soup.prettify()  # Prettify the BeautifulSoup object
-# guido_title = soup.title  # Get the title of webpage
-# guido_text = soup.text  # Get the text of webpage
-# a_tags = soup.find_all("a")  # Get all the a tags of webpage
-
-# print(pretty_soup)  # Print the response
-# print(guido_title)  # Print the title of the webpage
-# print(guido_text)  # Print the text of the webpage
-
-# # Print the URLs to the shell
-# for link in a_tags:
-#     print(link.get("href"))
+# Print tire size description
+print(ride_sharing["tire_sizes"].describe())
 
 
-""" Loading and exploring a JSON """
-# import json
+""" Back to the future """
+# Convert ride_date to date
+ride_sharing["ride_dt"] = pd.to_datetime(ride_sharing["ride_date"]).dt.date
 
-# # Load JSON
-# with open("a_movie.json") as json_file:
-#     json_data = json.load(json_file)
+# Save today's date
+today = dt.date.today()
 
-# # Print each key-value pair in json_data
-# for k in json_data.keys():
-#     print(k + ": ", json_data[k])
+# Set all in the future to today's date
+ride_sharing.loc[ride_sharing["ride_dt"] > today, "ride_dt"] = today
+
+# Print maximum of ride_dt column
+print(ride_sharing["ride_dt"].max())
 
 
-""" JSON from the web to Python """
-import requests
+""" Finding duplicates """
+# Find duplicates
+duplicates = ride_sharing.duplicated(subset="ride_id", keep=False)
 
-# Assign URL to variable
-url = "http://www.omdbapi.com/?apikey=72bc447a&t=social+network"
+# Sort your duplicated rides
+duplicated_rides = ride_sharing[duplicates].sort_values(by="ride_id")
 
-# Package the request, send the request and catch the response
-r = requests.get(url)
+# Print relevant columns of duplicated_rides
+print(duplicated_rides[["ride_id", "duration", "user_birth_year"]])
 
-# Decode the JSON data into a dictionary
-json_data = r.json()
 
-# Print each key-value pair in json_data
-for k in json_data.keys():
-    print(k + ": ", json_data[k])
+""" Treating duplicates """
+# Drop complete duplicates from ride_sharing
+ride_dup = ride_sharing.drop_duplicates()
+
+# Create statistics dictionary for aggregation function
+statistics = {"user_birth_year": "min", "duration": "mean"}
+
+# Group by ride_id and compute new statistics
+ride_unique = ride_dup.groupby("ride_id").agg(statistics).reset_index()
+
+# Find duplicated values again
+duplicates = ride_unique.duplicated(subset="ride_id", keep=False)
+duplicated_rides = ride_unique[duplicates == True]
+
+# Assert duplicates are processed
+assert duplicated_rides.shape[0] == 0
