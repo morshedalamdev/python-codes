@@ -1,351 +1,103 @@
-"""Numeric data or ...?"""
+"""A taste of things to come"""
 
-# Print the information of ride_sharing
-print(ride_sharing.info())
+names = ["Jerry", "Kramer", "Elaine", "George", "Newman"]
+# Print the list created using the Non-Pythonic approach
+i = 0
+new_list = []
+while i < len(names):
+    if len(names[i]) >= 6:
+        new_list.append(names[i])
+    i += 1
+print(new_list)
+# Print the list created by looping over the contents of names
+better_list = []
 
-# Print summary statistics of user_type column
-print(ride_sharing["user_type"].describe())
+for name in names:
+    if len(name) >= 6:
+        better_list.append(name)
 
-# Convert user_type from integer to category
-ride_sharing["user_type_cat"] = ride_sharing["user_type"].astype("category")
+print(better_list)
+# Print the list created by using list comprehension
+best_list = [name for name in names if len(name) >= 6]
+print(best_list)
 
-# Write an assert statement confirming the change
-assert ride_sharing["user_type_cat"].dtype == "category"
 
-# Print new summary statistics
-print(ride_sharing["user_type_cat"].describe())
+""" Built-in practice: range() """
+# Create a range object that goes from 0 to 5
+nums = range(0, 6)
+print(type(nums))
 
+# Convert nums to a list
+nums_list = list(nums)
+print(nums_list)
 
-""" Summing strings and concatenating numbers """
-# Strip duration of minutes
-ride_sharing["duration_trim"] = ride_sharing["duration"].str.strip("minutes")
+# Create a new list of odd numbers from 1 to 11 by unpacking a range object
+nums_list2 = [*range(1, 12, 2)]
+print(nums_list2)
 
-# Convert duration to integer
-ride_sharing["duration_time"] = ride_sharing["duration_trim"].astype("int")
 
-# Write an assert statement making sure of conversion
-assert ride_sharing["duration_time"].dtype == "int"
+""" Built-in practice: enumerate() """
+names = ["Jerry", "Kramer", "Elaine", "George", "Newman"]
+# Rewrite the for loop to use enumerate
+indexed_names = []
+for i, name in enumerate(names):
+    index_name = (i, name)
+    indexed_names.append(index_name)
+print(indexed_names)
 
-# Print formed columns and calculate average ride duration
-print(ride_sharing[["duration", "duration_trim", "duration_time"]])
-print(ride_sharing["duration_time"].mean())
+# Rewrite the above for loop using list comprehension
+indexed_names_comp = [(i, name) for i, name in enumerate(names)]
+print(indexed_names_comp)
 
+# Unpack an enumerate object with a starting index of one
+indexed_names_unpack = [*enumerate(names, 1)]
+print(indexed_names_unpack)
 
-""" Tire size constraints """
-# Convert tire_sizes to integer
-ride_sharing["tire_sizes"] = ride_sharing["tire_sizes"].astype("int")
 
-# Set all values above 27 to 27
-ride_sharing.loc[ride_sharing["tire_sizes"] > 27, "tire_sizes"] = 27
+""" Built-in practice: map() """
+names = ["Jerry", "Kramer", "Elaine", "George", "Newman"]
+# Use map to apply str.upper to each element in names
+names_map = map(str.upper, names)
 
-# Reconvert tire_sizes back to categorical
-ride_sharing["tire_sizes"] = ride_sharing["tire_sizes"].astype("category")
+# Print the type of the names_map
+print(type(names_map))
 
-# Print tire size description
-print(ride_sharing["tire_sizes"].describe())
+# Unpack names_map into a list
+names_uppercase = [*names_map]
 
+# Print the list created above
+print(names_uppercase)
 
-""" Back to the future """
-# Convert ride_date to date
-ride_sharing["ride_dt"] = pd.to_datetime(ride_sharing["ride_date"]).dt.date
 
-# Save today's date
-today = dt.date.today()
+""" Practice with NumPy arrays """
+# Print second row of nums
+print(nums[1, :])
 
-# Set all in the future to today's date
-ride_sharing.loc[ride_sharing["ride_dt"] > today, "ride_dt"] = today
+# Print all elements of nums that are greater than six
+print(nums[nums > 6])
 
-# Print maximum of ride_dt column
-print(ride_sharing["ride_dt"].max())
+# Double every element of nums
+nums_dbl = nums * 2
+print(nums_dbl)
 
+# Replace the third column of nums
+nums[:, 2] = nums[:, 2] + 1
+print(nums)
 
-""" Finding duplicates """
-# Find duplicates
-duplicates = ride_sharing.duplicated(subset="ride_id", keep=False)
 
-# Sort your duplicated rides
-duplicated_rides = ride_sharing[duplicates].sort_values(by="ride_id")
+""" Bringing it all together: Festivus! """
+# Create a list of arrival times
+arrival_times = [*range(10, 60, 10)]
 
-# Print relevant columns of duplicated_rides
-print(duplicated_rides[["ride_id", "duration", "user_birth_year"]])
+# Convert arrival_times to an array and update the times
+arrival_times_np = np.array(arrival_times)
+new_times = arrival_times_np - 3
 
+# Use list comprehension and enumerate to pair guests to new times
+guest_arrivals = [(names[i], time) for i, time in enumerate(new_times)]
 
-""" Treating duplicates """
-# Drop complete duplicates from ride_sharing
-ride_dup = ride_sharing.drop_duplicates()
+# Map the welcome_guest function to each (guest,time) pair
+welcome_map = map(welcome_guest, guest_arrivals)
 
-# Create statistics dictionary for aggregation function
-statistics = {"user_birth_year": "min", "duration": "mean"}
-
-# Group by ride_id and compute new statistics
-ride_unique = ride_dup.groupby("ride_id").agg(statistics).reset_index()
-
-# Find duplicated values again
-duplicates = ride_unique.duplicated(subset="ride_id", keep=False)
-duplicated_rides = ride_unique[duplicates == True]
-
-# Assert duplicates are processed
-assert duplicated_rides.shape[0] == 0
-
-
-""" Finding consistency """
-# Print unique values of survey columns in airlines
-print("Cleanliness: ", airlines["cleanliness"].unique(), "\n")
-print("Safety: ", airlines["safety"].unique(), "\n")
-print("Satisfaction: ", airlines["satisfaction"].unique(), "\n")
-
-# Find the cleanliness category in airlines not in categories
-cat_clean = set(airlines["cleanliness"]).difference(categories["cleanliness"])
-
-# Find rows with that category
-cat_clean_rows = airlines["cleanliness"].isin(cat_clean)
-cat_clean_only = airlines[cat_clean_rows]
-
-# Print rows with inconsistent category
-print(airlines[cat_clean_rows])
-
-# Print rows with consistent categories only
-print(airlines[~cat_clean_rows])
-
-
-""" Inconsistent categories """
-# Print unique values of both columns
-print(airlines["dest_region"].unique())
-print(airlines["dest_size"].unique())
-
-# Lower dest_region column and then replace "eur" with "europe"
-airlines["dest_region"] = airlines["dest_region"].str.lower()
-airlines["dest_region"] = airlines["dest_region"].replace({"eur": "europe"})
-
-# Remove white spaces from `dest_size`
-airlines["dest_size"] = airlines["dest_size"].str.strip()
-
-# Verify changes have been effected
-print(airlines["dest_size"].unique())
-print(airlines["dest_region"].unique())
-
-
-""" Remapping categories """
-# Create ranges for categories
-label_ranges = [0, 60, 180, np.inf]
-label_names = ["short", "medium", "long"]
-
-# Create wait_type column
-airlines["wait_type"] = pd.cut(
-    airlines["wait_min"], bins=label_ranges, labels=label_names
-)
-
-# Create mappings and replace
-mappings = {
-    "Monday": "weekday",
-    "Tuesday": "weekday",
-    "Wednesday": "weekday",
-    "Thursday": "weekday",
-    "Friday": "weekday",
-    "Saturday": "weekend",
-    "Sunday": "weekend",
-}
-
-airlines["day_week"] = airlines["day"].replace(mappings)
-
-
-""" Removing titles and taking names """
-# Replace "Dr." with empty string ""
-airlines["full_name"] = airlines["full_name"].str.replace("Dr.", "")
-
-# Replace "Mr." with empty string ""
-airlines["full_name"] = airlines["full_name"].str.replace("Mr.", "")
-
-# Replace "Miss" with empty string ""
-airlines["full_name"] = airlines["full_name"].str.replace("Miss", "")
-
-# Replace "Ms." with empty string ""
-airlines["full_name"] = airlines["full_name"].str.replace("Ms.", "")
-
-# Assert that full_name has no honorifics
-assert airlines["full_name"].str.contains("Ms.|Mr.|Miss|Dr.").any() == False
-
-
-""" Keeping it descriptive """
-# Store length of each row in survey_response column
-resp_length = airlines["survey_response"].str.len()
-
-# Find rows in airlines where resp_length > 40
-airlines_survey = airlines[resp_length > 40]
-
-# Assert minimum survey_response length is > 40
-assert airlines_survey["survey_response"].str.len().min() > 40
-
-# Print new survey_response column
-print(airlines_survey["survey_response"])
-
-
-""" Uniform currencies """
-# Find values of acct_cur that are equal to 'euro'
-acct_eu = banking["acct_cur"] == "euro"
-
-# Convert acct_amount where it is in euro to dollars
-banking.loc[acct_eu, "acct_amount"] = banking.loc[acct_eu, "acct_amount"] * 1.1
-
-# Unify acct_cur column by changing 'euro' values to 'dollar'
-banking.loc[acct_eu, "acct_cur"] = "dollar"
-
-# Assert that only dollar currency remains
-assert banking["acct_cur"].unique() == "dollar"
-
-
-""" account_opened """
-# Print the header of account_opend
-print(banking["account_opened"].head())
-
-# Convert account_opened to datetime
-banking["account_opened"] = pd.to_datetime(
-    banking["account_opened"],
-    # Return missing value for error
-    errors="coerce",
-)
-
-# Get year of account opened
-banking["acct_year"] = banking["account_opened"].dt.strftime("%Y")
-
-# Print acct_year
-print(banking["acct_year"])
-
-
-""" How's our data integrity? """
-# Store fund columns to sum against
-fund_columns = ["fund_A", "fund_B", "fund_C", "fund_D"]
-
-# Find rows where fund_columns row sum == inv_amount
-inv_equ = banking[fund_columns].sum(axis=1) == banking["inv_amount"]
-
-# Store consistent and inconsistent data
-consistent_inv = banking[inv_equ]
-inconsistent_inv = banking[~inv_equ]
-
-# Store consistent and inconsistent data
-print("Number of inconsistent investments: ", inconsistent_inv.shape[0])
-
-# Store today's date and find ages
-today = dt.date.today()
-ages_manual = today.year - banking["birth_date"].dt.year
-
-# Find rows where age column == ages_manual
-age_equ = ages_manual == banking["age"]
-
-# Store consistent and inconsistent data
-consistent_ages = banking[age_equ]
-inconsistent_ages = banking[~age_equ]
-
-# Store consistent and inconsistent data
-print("Number of inconsistent ages: ", inconsistent_ages.shape[0])
-
-
-""" Missing investors """
-# Print number of missing values in banking
-print(banking.isna().sum())
-
-# Visualize missingness matrix
-msno.matrix(banking)
-plt.show()
-
-# Isolate missing and non missing values of inv_amount
-missing_investors = banking[banking["inv_amount"].isna()]
-investors = banking[~banking["inv_amount"].isna()]
-
-# Sort banking by age and visualize
-banking_sorted = banking.sort_values(by="age")
-msno.matrix(banking_sorted)
-plt.show()
-
-
-""" Follow the money """
-# Drop missing values of cust_id
-banking_fullid = banking.dropna(subset=["cust_id"])
-
-# Compute estimated acct_amount
-acct_imp = banking_fullid["inv_amount"] * 5
-
-# Impute missing acct_amount with corresponding acct_imp
-banking_imputed = banking_fullid.fillna({"acct_amount": acct_imp})
-
-# Print number of missing values
-print(banking_imputed.isna().sum())
-
-
-""" The cutoff point """
-# Import process from thefuzz
-from thefuzz import process
-
-# Store the unique values of cuisine_type in unique_types
-unique_types = restaurants["cuisine_type"].unique()
-
-# Calculate similarity of 'asian' to all values of unique_types
-print(process.extract("asian", unique_types, limit=len(unique_types)))
-
-# Calculate similarity of 'american' to all values of unique_types
-print(process.extract("american", unique_types, limit=len(unique_types)))
-
-# Calculate similarity of 'italian' to all values of unique_types
-print(process.extract("italian", unique_types, limit=len(unique_types)))
-
-
-""" Remapping categories II """
-# Iterate through categories
-for cuisine in categories:
-    # Create a list of matches, comparing cuisine with the cuisine_type column
-    matches = process.extract(
-        cuisine, restaurants["cuisine_type"], limit=len(restaurants.cuisine_type)
-    )
-
-    # Iterate through the list of matches
-    for match in matches:
-        # Check whether the similarity score is greater than or equal to 80
-        if match[1] >= 80:
-            # If it is, select all rows where the cuisine_type is spelled this way, and set them to the correct cuisine
-            restaurants.loc[restaurants["cuisine_type"] == match[0]] = cuisine
-
-# Inspect the final result
-print(restaurants["cuisine_type"].unique())
-
-
-""" Pairs of restaurants """
-# Create an indexer and object and find possible pairs
-indexer = recordlinkage.Index()
-
-# Block pairing on cuisine_type
-indexer.block("cuisine_type")
-
-# Generate pairs
-pairs = indexer.index(restaurants, restaurants_new)
-
-
-""" Similar restaurants """
-# Create a comparison object
-comp_cl = recordlinkage.Compare()
-
-# Find exact matches on city, cuisine_types -
-comp_cl.exact("city", "city", label="city")
-comp_cl.exact("cuisine_type", "cuisine_type", label="cuisine_type")
-
-# Find similar matches of rest_name
-comp_cl.string("rest_name", "rest_name", label="name", threshold=0.8)
-
-# Get potential matches and print
-potential_matches = comp_cl.compute(pairs, restaurants, restaurants_new)
-print(potential_matches)
-
-
-""" Linking them together! """
-# Isolate potential matches with row sum >=3
-matches = potential_matches[potential_matches.sum(axis=1) >= 3]
-
-# Get values of second column index of matches
-matching_indices = matches.index.get_level_values(1)
-
-# Subset restaurants_new based on non-duplicate values
-non_dup = restaurants_new[~restaurants_new.index.isin(matching_indices)]
-
-# Concatenate restaurants and non_dup
-full_restaurants = pd.concat([restaurants, non_dup])
-print(full_restaurants)
+guest_welcomes = [*welcome_map]
+print(*guest_welcomes, sep="\n")
