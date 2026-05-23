@@ -101,3 +101,17 @@ welcome_map = map(welcome_guest, guest_arrivals)
 
 guest_welcomes = [*welcome_map]
 print(*guest_welcomes, sep="\n")
+
+
+""" Bringing it all together: Star Wars profiling """
+# Use get_publisher_heroes() to gather Star Wars heroes
+star_wars_heroes = get_publisher_heroes(heroes, publishers, "George Lucas")
+
+print(star_wars_heroes)
+print(type(star_wars_heroes))
+
+# Use get_publisher_heroes_np() to gather Star Wars heroes
+star_wars_heroes_np = get_publisher_heroes_np(heroes, publishers, "George Lucas")
+
+print(star_wars_heroes_np)
+print(type(star_wars_heroes_np))
